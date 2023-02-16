@@ -1,0 +1,25 @@
+"bcr_patient_barcode","Therapy1","Treatment1","Therapy2","Treatment2","Therapy3","Treatment3","Therapy4","Treatment4","Therapy5","Treatment5","Therapy6","Treatment6","Therapy7","Treatment7","Therapy8","Treatment8","Therapy9","Treatment9"
+"tcga-a1-a0sf","chemotherapy","tc","hormone therapy","tamoxifen","other, specify in notes","arimidex",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"tcga-a2-a04r","chemotherapy","taxol","chemotherapy","adriamycin","chemotherapy","cytoxan","hormone therapy","anastrozole","hormone therapy","tamoxifen",NA,NA,NA,NA,NA,NA,NA,NA
+"tcga-a2-a0d3","chemotherapy","docetaxel","hormone therapy","tamoxifen","targeted molecular therapy","herceptin","chemotherapy","carboplatin",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"tcga-a2-a3kd","chemotherapy","cytoxan","hormone therapy","tamoxifen","chemotherapy","taxotere",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"tcga-a8-a085","hormone therapy","tamoxifen",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"tcga-a8-a08b","chemotherapy","5-fluorouracil","chemotherapy","epirubicin","chemotherapy","cyclophosphamide","hormone therapy","tamoxifen","targeted molecular therapy","trastuzumab","hormone therapy","letrozole",NA,NA,NA,NA,NA,NA
+"tcga-a8-a091","chemotherapy","5-fluorouracil","chemotherapy","epirubicin","chemotherapy","cyclophosphamide","hormone therapy","tamoxifen","hormone therapy","letrozole","ancillary","zoledronic acid","ancillary","pamidronate",NA,NA,NA,NA
+"tcga-a8-a093","hormone therapy","tamoxifen",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"tcga-a8-a0a2","hormone therapy","tamoxifen",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"tcga-ac-a23e","hormone therapy","tamoxifen",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"tcga-aq-a54o","chemotherapy","adriamycin","chemotherapy","cytoxan","chemotherapy","taxol","hormone therapy","tamoxifen",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"tcga-ar-a24m","hormone therapy","tamoxifen","hormone therapy","letrozole","chemotherapy","doxorubicin","chemotherapy","cytoxan","chemotherapy","paclitaxel",NA,NA,NA,NA,NA,NA,NA,NA
+"tcga-ar-a2lm","chemotherapy","docetaxel","chemotherapy","cytoxan","chemotherapy","abraxane","hormone therapy","tamoxifen",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"tcga-ar-a2lo","chemotherapy","adriamycin","chemotherapy","cytoxan","chemotherapy","paclitaxel","immunotherapy","bevacizumab","hormone therapy","tamoxifen","hormone therapy","anastrozole",NA,NA,NA,NA,NA,NA
+"tcga-ar-a5qp","hormone therapy","tamoxifen",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"tcga-d8-a73u","hormone therapy","tamoxifen",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"tcga-e2-a14w","chemotherapy","cytoxan","chemotherapy","herceptin","hormone therapy","tamoxifen","chemotherapy","docetaxel",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"tcga-e2-a1b5","chemotherapy","cytoxan","hormone therapy","tamoxifen","chemotherapy","taxol",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"tcga-e2-a1ie","hormone therapy","arimidex","hormone therapy","tamoxifen","chemotherapy","paclitaxel","chemotherapy","cyclophosphamide","chemotherapy","doxorubicin","hormone therapy","femara","hormone therapy","faslodex","hormone therapy","exemestane","chemotherapy","everolimus"
+"tcga-e2-a1ig","chemotherapy","doxorubicin","chemotherapy","paclitaxel","hormone therapy","tamoxifen","chemotherapy","cyclophosphamide","hormone therapy","letrozole",NA,NA,NA,NA,NA,NA,NA,NA
+"tcga-e9-a1nh","hormone therapy","tamoxifen",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"tcga-e9-a227","chemotherapy","taxotere","hormone therapy","tamoxifen",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"tcga-e9-a22a","hormone therapy","tamoxifen",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"tcga-e9-a3q9","chemotherapy","cyclophosphane","chemotherapy","mitoxantrone","chemotherapy","5-fluorouracil","hormone therapy","tamoxifen",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA

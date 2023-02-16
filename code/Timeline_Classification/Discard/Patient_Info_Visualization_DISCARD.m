@@ -1,0 +1,230 @@
+clear all
+
+Data=csvread('DiscardClinicalData_dates.csv',1,1);
+
+nr=size(Data,1);
+nc=size(Data,2);
+
+newData=zeros(nr,3*nc/5);
+for j_tr=1:nc/5
+    for i_p=1:nr
+        if isnan(Data(i_p,(j_tr-1)*5+5))
+            newData(i_p,(j_tr-1)*3+(1:3))=NaN*ones(1,3);
+        else
+            treat_start=Data(i_p,(j_tr-1)*5+1);
+            treat_end=Data(i_p,(j_tr-1)*5+2);
+            treat_dur=treat_end-treat_start;
+            newData(i_p,(j_tr-1)*3+(1:3))=[treat_start treat_end treat_dur];
+        end
+    end
+end
+
+%%%%% Defining indicator of treatment type
+%%%%% NaN = NA; 0 = chemo; 1 = HT tamox; 2 = HT other; 3 = other
+Table=readtable('DiscardClinicalData_TreatmentType.csv');
+Type=table2array(Table(:,2:end));
+ther_indicator=zeros(nr,nc/5);
+
+for j_tr=1:nc/5
+    for i_p=1:nr
+        if strcmp(Type(i_p,(j_tr-1)*2+1),'NA')
+            ther_indicator(i_p,j_tr)=NaN;
+        elseif strcmp(Type(i_p,(j_tr-1)*2+1),'chemotherapy')
+            ther_indicator(i_p,j_tr)=0;
+        elseif strcmp(Type(i_p,(j_tr-1)*2+1),'hormone therapy') && strcmp(Type(i_p,(j_tr-1)*2+2),'tamoxifen')
+            ther_indicator(i_p,j_tr)=1;
+        elseif strcmp(Type(i_p,(j_tr-1)*2+1),'hormone therapy')
+            ther_indicator(i_p,j_tr)=2;
+        else
+            ther_indicator(i_p,j_tr)=3;
+        end
+    end
+end
+
+%%%%% Defining indicator of treatment status
+%%%%% 0 = not ongoing or NA; 1 = ongoing
+Table_trst=readtable('DiscardClinicalData_TreatmentStatus.csv');
+TrStat=table2array(Table_trst(:,2:end));
+
+trst_indicator=strcmp(TrStat,'yes');
+
+%%%%% Defining indicators of gender and vital status
+%%%%% First column: gender -> 1 = female; 0 = male
+%%%%% Second column: status -> 1 = alive; 0 = dead
+
+Table_gs=readtable('DiscardClinicalData_GenderAndStatus.csv');
+GenStat=table2array(Table_gs(:,2:end));
+gs_indicator=zeros(nr,2);
+
+gs_indicator(:,1)=strcmp(GenStat(:,1),'female');
+gs_indicator(:,2)=strcmp(GenStat(:,2),'alive');
+
+DeathDay=GenStat(:,3);
+
+
+%%%%% Defining indicators for neoplasm cancer status
+%%%%% with tumour = 1; tumour free = 2; empty = 3
+Table_ncs=readtable('DiscardClinicalData_NeoplasmCancerStatus.csv');
+NCS_full=table2array(Table_ncs(:,2:5));
+ncs_indfull=zeros(nr,4)+strcmp(NCS_full,'tumor free')+2*strcmp(NCS_full,'with tumor')+3*strcmp(NCS_full,'');
+ncs_ind=zeros(nr,4);
+
+%%%%% Day of last follow up ("end" date)
+Table_enddate=readtable('DiscardClinicalData_LastFollowup.csv');
+LastDayFull=table2array(Table_enddate(:,2:5));
+LastDay=zeros(nr,4);
+for i_p=1:nr
+    j_c=find(~isnan(LastDayFull(i_p,:)));
+    if length(j_c)>1
+        [lD,id,il]=unique(LastDayFull(i_p,j_c));
+        LastDay(i_p,:)=[lD, NaN*ones(1,4-length(lD))]; 
+        ncs_ind(i_p,:)=[ncs_indfull(i_p,id), 3*ones(1,4-length(lD))];
+    else
+        LastDay(i_p,:)=LastDayFull(i_p,:);
+        ncs_ind(i_p,:)=ncs_indfull(i_p,:);
+    end
+end
+
+%%%%% Days of new tumor event
+Table_newTumor=readtable('DiscardClinicalData_NewTumor.csv');
+NewTumor=table2array(Table_newTumor(:,2:3));
+
+
+%%%%% Radiation therapy start/end dates
+Table_Rtx=readtable('DiscardClinicalData_RadiationInfo.csv');
+Rtx=table2array(Table_Rtx(:,[2 3 5 6 8 9 ]));
+Rtx_ind=table2array(Table_Rtx(:,[4 7 10]));
+
+
+clr_mrk=[0 1 0
+    1 0 0
+    0 0 1];
+
+clr_thr=[216 82 24
+    0 113 188
+     236 176 31
+     125 46 141]/255;
+
+clr_rtx=[119 172 48]/255;
+
+v_sub=[0 34 68];
+figure
+for i_sub=1:4
+subplot(1,4,i_sub)
+hold all
+for i_p=v_sub(i_sub)+1:v_sub(i_sub+1)
+    
+    %%% Visualizing drug treatment info
+    for j_tr=1:nc/5
+        if isnan(newData(i_p,(j_tr-1)*3+1))
+            if ~isnan(newData(i_p,(j_tr-1)*3+2))
+                plot(0,i_p,'xk','MarkerSize',8)
+            end
+        else
+            if ~isnan(newData(i_p,(j_tr-1)*3+2))
+                y_p=i_p-0.4+(ther_indicator(i_p,j_tr))*0.2;
+                y_p2=i_p-0.2+(ther_indicator(i_p,j_tr))*0.2;
+                h=y_p2-y_p;
+                x_p=newData(i_p,(j_tr-1)*3+1);
+                x_p2=newData(i_p,(j_tr-1)*3+2);
+                w=x_p2-x_p;
+                rectangle('Position',[x_p,y_p,w,h],'FaceColor',clr_thr(ther_indicator(i_p,j_tr)+1,:),'EdgeColor','none')
+            elseif trst_indicator(i_p,j_tr)
+                jD=find(LastDay(i_p,:)>=newData(i_p,(j_tr-1)*3+1),1,'first');
+                if isempty(jD)
+                    plot(0,i_p,'xk','MarkerSize',8)
+                else 
+                    lD=LastDay(i_p,jD);
+                   y_p=i_p-0.4+(ther_indicator(i_p,j_tr))*0.2;
+                   y_p2=i_p-0.2+(ther_indicator(i_p,j_tr))*0.2;
+                   h=y_p2-y_p;
+                   x_p=newData(i_p,(j_tr-1)*3+1);
+                   x_p2=lD;
+                   w=x_p2-x_p;
+                   rectangle('Position',[x_p,y_p,w,h],'FaceColor',clr_thr(ther_indicator(i_p,j_tr)+1,:),'EdgeColor','none')
+                end
+            else
+                if gs_indicator(i_p,2)
+                    plot(0,i_p,'xk','MarkerSize',8)
+                else
+                    dD=str2double(DeathDay{i_p});
+                    y_p=i_p-0.4+(ther_indicator(i_p,j_tr))*0.2;
+                    y_p2=i_p-0.2+(ther_indicator(i_p,j_tr))*0.2;
+                    h=y_p2-y_p;
+                    x_p=newData(i_p,(j_tr-1)*3+1);
+                    x_p2=dD;
+                    w=x_p2-x_p;
+                    rectangle('Position',[x_p,y_p,w,h],'FaceColor',clr_thr(ther_indicator(i_p,j_tr)+1,:),'EdgeColor','none')
+                end
+            end
+        end
+
+    end
+    
+    %%% Visualizing Radiation info
+    for j_rtx=1:3
+        if any(~isnan(Rtx(i_p,(j_rtx-1)*2+(1:2))))
+            rtx_strt=Rtx(i_p,(j_rtx-1)*2+1);
+            rtx_end=Rtx(i_p,(j_rtx-1)*2+2);
+            rtx_ind=Rtx_ind(i_p,j_rtx);
+            if isnan(rtx_strt)
+                plot(0,i_p,'ok','MarkerSize',8)
+            elseif isnan(rtx_end) && strcmp(rtx_ind,'yes')
+                jT=find(LastDay(i_p,:)>=rtx_strt,1,'first');
+                if isempty(jT)
+                    plot(0,i_p,'ok','MarkerSize',8)
+                else
+                    y_p=i_p-0.1;
+                    y_p2=i_p+0.1;
+                    h=y_p2-y_p;
+                    x_p=rtx_strt;
+                    x_p2=LastDay(i_p,jT);
+                    w=x_p2-x_p;
+                    rectangle('Position',[x_p,y_p,w,h],'FaceColor',clr_rtx,'EdgeColor','none')
+                end
+            elseif isnan(rtx_end)
+                plot(0,i_p,'ok','MarkerSize',8)
+            else
+                y_p=i_p-0.1;
+                y_p2=i_p+0.1;
+                h=y_p2-y_p;
+                x_p=rtx_strt;
+                x_p2=rtx_end;
+                w=x_p2-x_p;
+                rectangle('Position',[x_p,y_p,w,h],'FaceColor',clr_rtx,'EdgeColor','none')
+            end
+    
+        end
+    end
+    
+    %%% Visualizing follow-up info
+    for j_fu=1:4
+        if ~isnan(LastDay(i_p,j_fu))
+            Tmax=LastDay(i_p,j_fu);
+            plot([Tmax Tmax],[i_p-0.4,i_p+0.4],'LineWidth',2,'Color',clr_mrk(ncs_ind(i_p,j_fu),:))
+        end
+    end
+    
+    %%% Visualizing new tumor occurrences
+    if any(~isnan(NewTumor(i_p,:)))
+        plot(NewTumor(i_p,:),[i_p i_p],'.r','MarkerSize',15)
+    end
+    
+    %%% Visualizing deaths
+    if ~gs_indicator(i_p,2)
+        dD=str2double(DeathDay{i_p});
+        plot([dD dD],[i_p-0.4,i_p+0.4],'-k','LineWidth',2)
+    end
+end
+ax=gca;
+ax.TickDir='out';
+ax.YLim=[v_sub(i_sub)+0.5 v_sub(i_sub+1)+0.5];
+ax.YTick=v_sub(i_sub)+1:v_sub(i_sub+1);
+ax.YTickLabel=table2array(Table(v_sub(i_sub)+1:v_sub(i_sub+1),1));
+for i_p=v_sub(i_sub)+1:v_sub(i_sub+1)
+    plot(ax.XLim,[i_p+0.5 i_p+0.5],'-','Color',[0.8 0.8 0.8])
+end
+
+
+
+end
